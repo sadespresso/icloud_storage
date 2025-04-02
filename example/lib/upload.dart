@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icloud_storage/icloud_storage.dart';
 import 'package:path/path.dart' as path;
@@ -99,9 +100,27 @@ class _UploadState extends State<Upload> {
               ),
               TextField(
                 controller: _filePathController,
-                decoration: const InputDecoration(
-                  labelText: 'filePath',
-                ),
+                decoration: InputDecoration(
+                    labelText:
+                        'filePath ( relative to applicationSupportDirectory )',
+                    suffixIcon: IconButton(
+                      icon: const Icon(CupertinoIcons.question_circle),
+                      onPressed: () {
+                        showCupertinoDialog(
+                            context: context,
+                            builder: (context) => CupertinoAlertDialog(
+                                  title: const Text('filePath'),
+                                  content: const Text(
+                                      'Try f0, f1, f2, ..., f9 for testing if you don\'t have a file.'),
+                                  actions: [
+                                    CupertinoDialogAction(
+                                      child: const Text('OK'),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                  ],
+                                ));
+                      },
+                    )),
               ),
               TextField(
                 controller: _destPathController,
