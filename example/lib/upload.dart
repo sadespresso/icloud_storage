@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:icloud_storage/icloud_storage.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'utils.dart';
 
 class Upload extends StatefulWidget {
@@ -13,7 +16,7 @@ class Upload extends StatefulWidget {
 }
 
 class _UploadState extends State<Upload> {
-  final _containerIdController = TextEditingController();
+  final _containerIdController = TextEditingController(text: "iCloud.test");
   final _filePathController = TextEditingController();
   final _destPathController = TextEditingController();
   StreamSubscription<double>? _progressListner;
@@ -27,9 +30,15 @@ class _UploadState extends State<Upload> {
         _error = null;
       });
 
+      final String filePath = path.join(
+          await getApplicationSupportDirectory().then((v) => v.path),
+          _filePathController.text);
+
+      File(filePath).setLastModifiedSync(DateTime.now());
+
       await ICloudStorage.upload(
         containerId: _containerIdController.text,
-        filePath: _filePathController.text,
+        filePath: filePath,
         destinationRelativePath:
             _destPathController.text.isEmpty ? null : _destPathController.text,
         onProgress: (stream) {
